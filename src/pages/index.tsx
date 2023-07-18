@@ -1,18 +1,32 @@
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import CreatePostWizard from "~/components/CreatePostWizard";
+import { LoadingPage } from "~/components/LoadingSpiner";
 import PostView from "~/components/PostView";
 import { api } from "~/utils/api";
 
+const Feed = () => {
+  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
+  if (postsLoading) return <LoadingPage />;
+  if (!data) throw new Error("Something went wrong");
+  return (
+    <div>
+      {[...data]?.map((postWithUser) => (
+        <PostView postWithUser={postWithUser} key={postWithUser?.post?.id} />
+      ))}
+    </div>
+  );
+};
+
 export default function Home() {
-  const user = useUser();
+  const { user, isLoaded: userLoaded, isSignedIn } = useUser();
+  console.log({ user, isSignedIn });
+  // start fetching asap let rq handle cacheing
+  api.posts.getAll.useQuery();
 
-  const { data, isLoading } = api.posts.getAll.useQuery();
-  console.log({ data, user });
+  // if (!userLoaded && !postsLoaded) return <div></div>; //return empty div if both are loading since user loads faster than posts, don't want to block
 
-  if (isLoading) return <div>Loading...</div>;
-
-  if (!data) return <div>Something went wrong</div>;
+  // if (!data) return <div>Something went wrong</div>;
 
   return (
     <>
@@ -24,21 +38,14 @@ export default function Home() {
       <main className="flex h-screen justify-center">
         <div className="w-full border-x border-slate-500 md:max-w-2xl">
           <div className="border-b border-slate-500 p-4">
-            {!user?.isSignedIn && <SignInButton />}
-            {user.isSignedIn && (
+            {!isSignedIn && <SignInButton />}
+            {isSignedIn && (
               <div>
                 <CreatePostWizard />
               </div>
             )}
           </div>
-          <div>
-            {[...data!]?.map((postWithUser) => (
-              <PostView
-                postWithUser={postWithUser}
-                key={postWithUser.post.id}
-              />
-            ))}
-          </div>
+          <Feed />
         </div>
       </main>
     </>
