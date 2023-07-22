@@ -1,7 +1,8 @@
-import { RouterOutputs } from "~/utils/api";
+import type { RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
+import Link from "next/link";
 dayjs.extend(relativeTime);
 
 type PostWithAuthor = RouterOutputs["posts"]["getAll"][number];
@@ -23,8 +24,12 @@ const PostView = ({ postWithUser }: PostViewProps) => {
       />
       <div className="flex flex-col">
         <div className="flex gap-x-2 text-slate-300">
-          <span>{`@${author?.userName}`}</span> ·{" "}
-          <span>{dayjs(post.createdAt).fromNow()}</span>
+          <Link href={`/@${author.userName}`}>
+            <span>{`@${author?.userName}`}</span> ·{" "}
+          </Link>
+          <Link href={`/post/${post.id}`}>
+            <span>{dayjs(post.createdAt).fromNow()}</span>
+          </Link>
         </div>
         <span className="text-[24px]">{post.content}</span>
       </div>
