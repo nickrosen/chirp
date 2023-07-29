@@ -3,7 +3,7 @@ name: Node.js CI
 on: [push, pull_request]
 
 env:
-  DATABASE_URL: "https://example.com]"
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
 jobs:
   build:
