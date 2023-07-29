@@ -1,0 +1,27 @@
+name: Node.js CI
+
+on: [push]
+
+env:
+  DATABASE_URL: "https://example.com]"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14" # Change this to your desired Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check with TypeScript
+        run: npm run typecheck
+
+      - name: Lint with ESLint
+        run: npm run lint
