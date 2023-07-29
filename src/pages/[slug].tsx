@@ -1,14 +1,11 @@
 import Head from "next/head";
 import { api } from "~/utils/api";
-import { appRouter } from "~/server/api/root";
-import { prisma } from "~/server/db";
-import superjson from "superjson";
-import { createServerSideHelpers } from "@trpc/react-query/server";
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import PageLayout from "~/components/Layout";
 import Image from "next/image";
 import { LoadingPage } from "~/components/LoadingSpiner";
 import PostView from "~/components/PostView";
+import { generateSSGHelper } from "~/server/helpers/ssgHelpers";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
@@ -30,13 +27,9 @@ const ProfileFeed = (props: { userId: string }) => {
   );
 };
 
-const ProfilePage: NextPage<PageProps> = ({
-  username,
-}: {
-  username: string;
-}) => {
+const ProfilePage = ({ username }: { username: string }) => {
   const { data, isLoading, error } = api.profile.getUserByUsername.useQuery({
-    username: "nickrosen",
+    username,
   });
   if (isLoading) return <div>Loading...</div>;
   if (error || !data) return <div>Something went wrong</div>;
@@ -69,11 +62,7 @@ const ProfilePage: NextPage<PageProps> = ({
 export default ProfilePage;
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = createServerSideHelpers({
-    router: appRouter,
-    ctx: { prisma, userId: null },
-    transformer: superjson, // optional - adds superjson serialization
-  });
+  const ssg = generateSSGHelper();
 
   const slug = context.params?.slug as string;
 
