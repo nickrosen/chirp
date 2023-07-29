@@ -1,13 +1,11 @@
 import Head from "next/head";
 import { api } from "~/utils/api";
-import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import type { GetStaticProps } from "next";
 import PageLayout from "~/components/Layout";
 import Image from "next/image";
 import { LoadingPage } from "~/components/LoadingSpiner";
 import PostView from "~/components/PostView";
 import { generateSSGHelper } from "~/server/helpers/ssgHelpers";
-
-type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
@@ -34,6 +32,7 @@ const ProfilePage = ({ username }: { username: string }) => {
   if (isLoading) return <div>Loading...</div>;
   if (error || !data) return <div>Something went wrong</div>;
   console.log({ data });
+  const safeUsername = typeof data.username === "string" ? data.username : "";
 
   return (
     <>
@@ -51,7 +50,7 @@ const ProfilePage = ({ username }: { username: string }) => {
           />
         </div>
         <div className="h-[64px]"></div>
-        <div className="p-4 text-2xl">{`@${data.username}`}</div>
+        <div className="p-4 text-2xl">{`@${safeUsername}`}</div>
         <div className="w-full border-b border-slate-400" />
         <ProfileFeed userId={data.id} />
       </PageLayout>

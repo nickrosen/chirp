@@ -2,8 +2,6 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import type { GetStaticProps } from "next";
 import PageLayout from "~/components/Layout";
-import Image from "next/image";
-import { LoadingPage } from "~/components/LoadingSpiner";
 import PostView from "~/components/PostView";
 import { generateSSGHelper } from "~/server/helpers/ssgHelpers";
 

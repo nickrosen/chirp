@@ -1,4 +1,4 @@
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import CreatePostWizard from "~/components/CreatePostWizard";
 import PageLayout from "~/components/Layout";
@@ -21,7 +21,7 @@ const Feed = () => {
 
 export default function Home() {
   const { user, isLoaded: userLoaded, isSignedIn } = useUser();
-  console.log({ user, isSignedIn });
+  console.log({ user, isSignedIn, userLoaded });
   // start fetching asap let rq handle cacheing
   api.posts.getAll.useQuery();
 

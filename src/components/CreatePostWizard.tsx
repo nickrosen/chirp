@@ -1,10 +1,9 @@
 import { useUser } from "@clerk/nextjs";
-import { error } from "console";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { api } from "~/utils/api";
-import LoadingSpinner, { LoadingPage } from "./LoadingSpiner";
+import LoadingSpinner from "./LoadingSpiner";
 
 const CreatePostWizard = () => {
   const [input, setInput] = useState("");
